@@ -88,7 +88,7 @@ f.close()
 #
 #    Todo: Associate with each vertex v of the graph a number
 #     C[v] (the cheapest cost of a connection to v)
-#     and an edge E[v] (the edge providing that cheapest connection).
+#     and an edge E[v] (the edge providing that cheapest connection)..
 #
 #    Todo:To initialize these values, set all values of C[v] to +∞ (or to any number larger than the maximum edge weight)
 #     and set each E[v] to a special flag value indicating that there is no edge connecting v to earlier vertices.

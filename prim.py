@@ -2,7 +2,7 @@
 
 import matplotlib.pyplot as plt
 import networkx as nx
-import sys
+import numpy as np
 
 '''
 For the program to work, install the following software:
@@ -19,6 +19,8 @@ example: python3 prim.py city-pairs.txt
 def display_graph(matrix):
     # create a graph to image
     G = nx.Graph()
+
+
 
     # fill the graph to be imaged with the matrix used
     for i in range(nod_cout):
@@ -38,6 +40,7 @@ def display_graph(matrix):
     for i in range(nod_cout):
         if len(nod_list[i]) > node_len:
             node_len = len(nod_list)
+
 
     # nodes
     nx.draw_networkx_nodes(G, pos, node_size=node_len * 110, node_shape='h', node_len=100, alpha=0.5)
@@ -74,6 +77,12 @@ nod_cout = (len(nod_set))  # maintain a count of all nodes
 gMatrix = [[0 for i in range(nod_cout)]
            for j in range(nod_cout)]
 
+#    Todo: Associate with each vertex v of the graph a number
+#     C[v] (the cheapest cost of a connection to v)
+#     and an edge E[v] (the edge providing that cheapest connection)..
+#    Todo:To initialize these values, set all values of C[v] to +∞
+#     (or to any number larger than the maximum edge weight)
+#     and set each E[v] to a special flag value indicating that there is no edge connecting v to earlier vertices.
 # Fills the 2D array with all entry data found in doc
 with open(file_name) as f:
     for l in f:
@@ -81,24 +90,34 @@ with open(file_name) as f:
         gMatrix[nod_list.index(column[0])][nod_list.index(column[1])] = column[2]
 f.close()
 
+# print the matrix
+for row in gMatrix:
+    for val in row:
+        print("{:4}".format(val), end=' ')
+    print("\n")
+
+# how to get the 0 flag in the nodes
+# starting at 0 0, if you visit 0, 1
+# set flag 1, 1 to visited
+# if you visit 0, 2 set 2, 2 to visited
+
+# in this loop, row.index(0) is the row you are in
+# column is the value in gMatrix[row][column] and
+# row.index(column) is the city to which gMatrix[row][column] points
+minValue: int = 1000
+for row in gMatrix:
+    for value in row:
+        print(row.index(0), value, row.index(value))
+# print(column[2])
+
 #######################################################################
 #
 # sudo code taken from https://en.wikipedia.org/wiki/Prim%27s_algorithm
 #
-#
-#    Todo: Associate with each vertex v of the graph a number
-#     C[v] (the cheapest cost of a connection to v)
-#     and an edge E[v] (the edge providing that cheapest connection)..
-#
-#    Todo:To initialize these values, set all values of C[v] to +∞
-#     (or to any number larger than the maximum edge weight)
-#     and set each E[v] to a special flag value indicating that there is no edge connecting v to earlier vertices.
-#
-#
 #    Todo:Initialize an empty forest F and a set Q of vertices that have not yet been included in
 #     F (initially, all vertices).
 #
-#    Todo:Repeat the following steps until Q is empty:
+#    Todo:Repeat the following steps until
 #        Find and remove a vertex v from Q having the minimum possible value of C[v]
 #        Add v to F and, if E[v] is not the special flag value, also add E[v] to F
 #        Loop over the edges vw connecting v to other vertices w.

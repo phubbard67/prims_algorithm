@@ -105,9 +105,13 @@ for row in gMatrix:
 # column is the value in gMatrix[row][column] and
 # row.index(column) is the city to which gMatrix[row][column] points
 minValue: int = 1000
-for row in gMatrix:
-    for value in row:
-        print(row.index(0), value, row.index(value))
+for i in gMatrix:
+    for j in i:
+        if minValue > int(j) > 0:
+            minValue = int(j)
+    print(minValue)
+    minValue = 1000
+
 # print(column[2])
 
 #######################################################################

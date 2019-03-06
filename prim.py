@@ -24,10 +24,8 @@ def display_graph(matrix):
 
 
     # fill the graph to be imaged with the matrix used
-    for i in range(nod_cout):
-        for j in range(nod_cout):
-            if int(matrix[i][j]) > 0:
-                G.add_edge(nod_list[i], nod_list[j], weight=int(matrix[i][j]))
+    for row in matrix:
+        G.add_edge(nod_list[row[0]], nod_list[row[1]], weight=int(row[2]))
 
     edge = [(u, v) for (u, v, d) in G.edges(data=True)]
     pos = nx.spring_layout(G, k=40)  # positions for all nodes
@@ -88,7 +86,8 @@ gMatrix = [[0 for i in range(nod_cout)]
 with open(file_name) as f:
     for l in f:
         column = l.strip().split(' ')
-        gMatrix[int(nod_list.index(column[0]))][int(nod_list.index(column[1]))] = column[2]
+        gMatrix[int(nod_list.index(column[0]))][int(nod_list.index(column[1]))] = int(column[2])
+        gMatrix[int(nod_list.index(column[1]))][int(nod_list.index(column[0]))] = int(column[2])
 f.close()
 
 # print the matrix
@@ -102,57 +101,40 @@ for row in gMatrix:
 # set flag 1, 1 to visited
 # if you visit 0, 2 set 2, 2 to visited
 
-# in this loop, row.index(0) is the row you are in
-# column is the value in gMatrix[row][column] and
-# row.index(column) is the city to which gMatrix[row][column] points
-minValue: int = 1000
-count: int = 0
-for i in gMatrix:
-    for j in i:
-        if minValue > int(j) > 0:
-            minValue = int(j)
-    count += minValue
-    print(count)
-    minValue = 1000
-
 # print(column[2])
 
-#######################################################################
-#
-# sudo code taken from https://en.wikipedia.org/wiki/Prim%27s_algorithm
-#
-#    Todo:Initialize an empty forest F and a set Q of vertices that have not yet been included in
-#     F (initially, all vertices).
-forest: List[bool] = []
-for j in nod_cout - 1:
-    forest.append(False)
 
+isVisited: List[bool] = []
+for j in range(nod_cout):
+    isVisited.append(False)
+count = 0
+setToReturn = []
 mySet = gMatrix
 
-#    Todo:Repeat the following steps until
-#        Find and remove a vertex v from Q having the minimum possible value of C[v]
-#        Add v to F and, if E[v] is not the special flag value, also add E[v] to F
-#        Loop over the edges vw connecting v to other vertices w.
-#        For each such edge,
-#        if w still belongs to Q and vw has smaller weight than C[w], perform the following steps:
-#            Set C[w] to the cost of edge vw
-#            Set E[w] to point to edge vw.
-#     Return F
+isVisited[0] = True
 
-forest[0] = True
+for z in range(nod_cout):
 
-for z in nod_cout - 1:
-
-    minVal = 2^61
+    minVal: int = pow(2, 61)
     x = 0
     y = 0
 
-    for i in nod_cout:
-        if forest[i]:
+    for i in range(nod_cout):
+        if isVisited[i]:
+            for j in range(nod_cout):
+                if not isVisited[j]:
+                    if int(minVal) > int(mySet[i][j]):
+                        minVal = mySet[i][j]
+                        y = j
+                        x = i
+    print("From:", x, "to", y, "=", mySet[x][y], "\n")
+    count += int(mySet[x][y])
+    setToReturn.append([x, y, int(mySet[x][y])])
+    isVisited[y] = True
+print("The total weight:", count)
+for row in setToReturn:
+        print("From", nod_list[row[0]], "to", nod_list[row[1]], "=", row[2], "miles" )
 
-
-
-            
 
 #
 #
@@ -160,4 +142,4 @@ for z in nod_cout - 1:
 #######################################################################
 
 
-display_graph(gMatrix)
+display_graph(setToReturn)

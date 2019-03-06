@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from typing import List
 
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -87,7 +88,7 @@ gMatrix = [[0 for i in range(nod_cout)]
 with open(file_name) as f:
     for l in f:
         column = l.strip().split(' ')
-        gMatrix[nod_list.index(column[0])][nod_list.index(column[1])] = column[2]
+        gMatrix[int(nod_list.index(column[0]))][int(nod_list.index(column[1]))] = column[2]
 f.close()
 
 # print the matrix
@@ -105,11 +106,13 @@ for row in gMatrix:
 # column is the value in gMatrix[row][column] and
 # row.index(column) is the city to which gMatrix[row][column] points
 minValue: int = 1000
+count: int = 0
 for i in gMatrix:
     for j in i:
         if minValue > int(j) > 0:
             minValue = int(j)
-    print(minValue)
+    count += minValue
+    print(count)
     minValue = 1000
 
 # print(column[2])
@@ -120,7 +123,12 @@ for i in gMatrix:
 #
 #    Todo:Initialize an empty forest F and a set Q of vertices that have not yet been included in
 #     F (initially, all vertices).
-#
+forest: List[bool] = []
+for j in nod_cout - 1:
+    forest.append(False)
+
+mySet = gMatrix
+
 #    Todo:Repeat the following steps until
 #        Find and remove a vertex v from Q having the minimum possible value of C[v]
 #        Add v to F and, if E[v] is not the special flag value, also add E[v] to F
@@ -130,6 +138,22 @@ for i in gMatrix:
 #            Set C[w] to the cost of edge vw
 #            Set E[w] to point to edge vw.
 #     Return F
+
+forest[0] = True
+
+for z in nod_cout - 1:
+
+    minVal = 2^61
+    x = 0
+    y = 0
+
+    for i in nod_cout:
+        if forest[i]:
+
+
+
+            
+
 #
 #
 #

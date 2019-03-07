@@ -17,7 +17,7 @@ example: python3 prim.py city-pairs.txt
 '''
 
 
-# display_graph originally written by https://github.com/cteters, then modified by me
+# collaboration with https://github.com/cteters
 def display_graph(matrix):
     # create a graph to image
     G = nx.Graph()
@@ -55,41 +55,44 @@ def display_graph(matrix):
     plt.show()
 
 
-def getPrim(gMatrix):
-    #bool array to check if a node has been visited
-    isVisited: List[bool] = []
-    for j in range(nod_cout):
-        isVisited.append(False)
-    #the edge values to return
-    setToReturn = []
-    #copy of the set
-    mySet = gMatrix
+def getPrim(g_matrix):
+    # the edge values to return
+    set_to_return = []
+    # copy of the set
+    my_set = g_matrix
+    set_length = 0
 
     # set the first value in the graph to visited
-    isVisited[0] = True
+    my_set[0][0] = 1
 
     # first loop to find the minimum value for each node
     for z in range(nod_cout):
 
-        minVal: int = pow(2, 61)
-        x = 0
-        y = 0
+        min_val: int = pow(2, 61)
+        pos_x = 0
+        pos_y = 0
 
         # then loop to see if the node has been visited
         # if so, then keep looping to find the minimum value
         for i in range(nod_cout):
-            if isVisited[i]:
+            if my_set[i][i] == 1:
                 for j in range(nod_cout):
-                    if not isVisited[j]:
-                        if int(minVal) > int(mySet[i][j]):
-                            minVal = mySet[i][j]
-                            y = j
-                            x = i
-        # you've found the minimum value, so set that to the setToReturn
+                    if my_set[j][j] == 0:
+                        if int(min_val) > int(my_set[i][j]):
+                            pos_y = j
+                            pos_x = i
+                            min_val = my_set[i][j]
+        # you've found the minimum value, so set that to the set_to_return
         # and set the node to visited
-        setToReturn.append([x, y, int(mySet[x][y])])
-        isVisited[y] = True
-    return setToReturn
+        set_length += 1
+        my_set[pos_y][pos_y] = 1
+        set_to_return.append([pos_x, pos_y, int(my_set[pos_x][pos_y])])
+
+        # this is set to zero, because the final mile length
+        # is determined by the array's 0 or 1 value
+    set_to_return[set_length - 1][2] = 0
+
+    return set_to_return
 
 
 file_name = "city-pairs.txt"
@@ -124,12 +127,6 @@ for row in gMatrix:
         print("{:4}".format(val), end=' ')
     print("\n")
 
-# how to get the 0 flag in the nodes
-# starting at 0 0, if you visit 0, 1
-# set flag 1, 1 to visited
-# if you visit 0, 2 set 2, 2 to visited
-
-# print(column[2])
 miles = 0
 
 primSet = getPrim(gMatrix)

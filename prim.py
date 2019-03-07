@@ -16,16 +16,15 @@ Or with O.S. specific information and run as a Python3 file.
 example: python3 prim.py city-pairs.txt
 '''
 
+
 # display_graph originally written by https://github.com/cteters, then modified by me
 def display_graph(matrix):
     # create a graph to image
     G = nx.Graph()
 
-
-
     # fill the graph to be imaged with the matrix used
-    for row in matrix:
-        G.add_edge(nod_list[row[0]], nod_list[row[1]], weight=int(row[2]))
+    for rows in matrix:
+        G.add_edge(nod_list[rows[0]], nod_list[rows[1]], weight=int(rows[2]))
 
     edge = [(u, v) for (u, v, d) in G.edges(data=True)]
     pos = nx.spring_layout(G, k=40)  # positions for all nodes
@@ -40,7 +39,6 @@ def display_graph(matrix):
         if len(nod_list[i]) > node_len:
             node_len = len(nod_list)
 
-
     # nodes
     nx.draw_networkx_nodes(G, pos, node_size=node_len * 110, node_shape='h', node_len=100, alpha=0.5)
     # other node_shape to try:   so^>v<dph8 
@@ -51,11 +49,47 @@ def display_graph(matrix):
     # labels
     nx.draw_networkx_labels(G, pos, font_size=9, font_family='sans-serif')
 
-
     plt.axis('off')
     plt.subplots_adjust(left=0.00, bottom=0.00, right=1.00, top=1.00, wspace=0.2, hspace=0.2)
     plt.figure(1, figsize=(1000, 1000))
     plt.show()
+
+
+def getPrim(gMatrix):
+    #bool array to check if a node has been visited
+    isVisited: List[bool] = []
+    for j in range(nod_cout):
+        isVisited.append(False)
+    #the edge values to return
+    setToReturn = []
+    #copy of the set
+    mySet = gMatrix
+
+    # set the first value in the graph to visited
+    isVisited[0] = True
+
+    # first loop to find the minimum value for each node
+    for z in range(nod_cout):
+
+        minVal: int = pow(2, 61)
+        x = 0
+        y = 0
+
+        # then loop to see if the node has been visited
+        # if so, then keep looping to find the minimum value
+        for i in range(nod_cout):
+            if isVisited[i]:
+                for j in range(nod_cout):
+                    if not isVisited[j]:
+                        if int(minVal) > int(mySet[i][j]):
+                            minVal = mySet[i][j]
+                            y = j
+                            x = i
+        # you've found the minimum value, so set that to the setToReturn
+        # and set the node to visited
+        setToReturn.append([x, y, int(mySet[x][y])])
+        isVisited[y] = True
+    return setToReturn
 
 
 file_name = "city-pairs.txt"
@@ -76,12 +110,6 @@ nod_cout = (len(nod_set))  # maintain a count of all nodes
 gMatrix = [[0 for i in range(nod_cout)]
            for j in range(nod_cout)]
 
-#    Todo: Associate with each vertex v of the graph a number
-#     C[v] (the cheapest cost of a connection to v)
-#     and an edge E[v] (the edge providing that cheapest connection)..
-#    Todo:To initialize these values, set all values of C[v] to +∞
-#     (or to any number larger than the maximum edge weight)
-#     and set each E[v] to a special flag value indicating that there is no edge connecting v to earlier vertices.
 # Fills the 2D array with all entry data found in doc
 with open(file_name) as f:
     for l in f:
@@ -102,44 +130,13 @@ for row in gMatrix:
 # if you visit 0, 2 set 2, 2 to visited
 
 # print(column[2])
+miles = 0
 
+primSet = getPrim(gMatrix)
+for row in primSet:
+    miles += row[2]
+    print("From", nod_list[row[0]], "to", nod_list[row[1]], "=", row[2], "miles")
+print("Total number of miles:", miles)
 
-isVisited: List[bool] = []
-for j in range(nod_cout):
-    isVisited.append(False)
-count = 0
-setToReturn = []
-mySet = gMatrix
-
-isVisited[0] = True
-
-for z in range(nod_cout):
-
-    minVal: int = pow(2, 61)
-    x = 0
-    y = 0
-
-    for i in range(nod_cout):
-        if isVisited[i]:
-            for j in range(nod_cout):
-                if not isVisited[j]:
-                    if int(minVal) > int(mySet[i][j]):
-                        minVal = mySet[i][j]
-                        y = j
-                        x = i
-    print("From:", x, "to", y, "=", mySet[x][y], "\n")
-    count += int(mySet[x][y])
-    setToReturn.append([x, y, int(mySet[x][y])])
-    isVisited[y] = True
-print("The total weight:", count)
-for row in setToReturn:
-        print("From", nod_list[row[0]], "to", nod_list[row[1]], "=", row[2], "miles" )
-
-
-#
-#
-#
-#######################################################################
-
-
-display_graph(setToReturn)
+# display the graph
+display_graph(primSet)
